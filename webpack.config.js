@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const webpack = require('webpack');
 
 module.exports = {
     entry: path.join(__dirname, "src/main.js"),
@@ -35,6 +36,26 @@ module.exports = {
                     "postcss-loader",
                 ],
             },
+            {
+                test: /\.scss$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    ['postcss-import'],
+                                    ['tailwindcss'],
+                                    ['autoprefixer'],
+                                ],
+                            },
+                        },
+                    }
+                ],
+            },
         ],
     },
     plugins: [
@@ -43,6 +64,9 @@ module.exports = {
             template: path.resolve(__dirname, "public/index.html"),
         }),
         new MiniCssExtractPlugin(),
+        new webpack.DefinePlugin({
+            'process.env': JSON.stringify(process.env)
+        })
     ],
     devServer: {
         open: true,

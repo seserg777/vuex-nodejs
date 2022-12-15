@@ -9,11 +9,15 @@ const state = {
 
 // getters
 const getters = {
+    quantityProducts: (state, getters, rootState) => {
+        return getters.cartProducts.reduce((quantity, product) => {
+            return quantity + product.quantity
+        }, 0)
+    },
+
     cartProducts: (state, getters, rootState) => {
-        console.log('cartProducts', state.items);
         return state.items.map(({ id, quantity }) => {
             const product = rootState.products.all.find(product => product.id === id);
-            console.log('cartProducts 1', product, rootState.products.all);
             return {
                 id: product.id,
                 title: product.title,
@@ -49,13 +53,10 @@ const actions = {
     },
 
     addProductToCart ({ state, commit }, product) {
-        console.log('addProductToCart', product);
         commit('setCheckoutStatus', null)
         //if (product.inventory > 0) {
             const cartItem = state.items.find(item => item.id === product.id);
-            console.log('cartItem', cartItem);
             if (!cartItem) {
-                console.log('will commit pushProductToCart');
                 commit('pushProductToCart', { id: product.id })
             } else {
                 commit('incrementItemQuantity', cartItem)
@@ -69,7 +70,6 @@ const actions = {
 // mutations
 const mutations = {
     pushProductToCart (state, { id }) {
-        console.log('mutation pushProductToCart', id);
         state.items.push({
             id,
             quantity: 1

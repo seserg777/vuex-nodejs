@@ -1,27 +1,25 @@
-/*import shop from '../../api/shop'*/
-import ShopService from '../../services/shop';
+import ProductService from '../../../services/ProductService';
 
-// initial state
 const state = {
     all: []
 }
 
-// getters
-const getters = {}
+const getters = {
+    all: state => state.all
+}
 
-// actions
 const actions = {
-    getAllProducts ({ commit }) {
-        ShopService.getProducts(products => {
-            commit('setProducts', products)
+    getAllItems ({ commit }) {
+        ProductService.index()
+        .then(r => {
+            commit('setItems', r.data);
         });
     }
 }
 
-// mutations
 const mutations = {
-    setProducts (state, products) {
-        state.all = products
+    setItems (state, items) {
+        state.all = items
     },
 
     /*decrementProductInventory (state, { id }) {
